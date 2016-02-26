@@ -2,7 +2,7 @@ package model;
 
 
 import java.io.File;
-import java.io.FileInputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,17 +17,32 @@ public class FileInformation {
     {
         dataOfWords = new ArrayList<>();
     }
-    public String getPath(){
+
+    public String getPath() {
         return this.path;
     }
+
     public FileInformation(String path) {
         this.path = path;
     }
-    public FileInformation(File file){
-        this.path=file.getAbsolutePath();
+
+    public FileInformation(File file) {
+        this.path = file.getAbsolutePath();
     }
 
     //return 0 if word exist else return count of word
+
+    public int getCountWords() {
+        int answer = 0;
+        for (DataOfWord dataOfWord : dataOfWords) {
+            answer += dataOfWord.getCount();
+        }
+        return answer;
+    }
+
+    public int getDifferentWords() {
+        return dataOfWords.size();
+    }
 
     public String getWord(int index) {
         if (index > dataOfWords.size() || 0 > index) {
@@ -55,11 +70,7 @@ public class FileInformation {
         dataOfWords.add(new DataOfWord(word));
     }
 
-    public int getCountWords() {
-        return dataOfWords.size();
-    }
-
     public double getTfWord(String word) {
-        return containWord(word) / (dataOfWords.size()*1.0);
+        return containWord(word) / (getCountWords() * 1.0);
     }
 }

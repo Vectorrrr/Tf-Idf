@@ -22,8 +22,19 @@ public class FileReader implements Reader,AutoCloseable,Closeable {
 
     public FileReader(File file) throws IOException {
         bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-        nextLine = bufferedReader.readLine()
-        ;
+        nextLine = bufferedReader.readLine();
+    }
+
+    private void getNextLine() {
+        try {
+            nextLine = bufferedReader.readLine();
+        } catch (IOException e) {
+            consoleWriter.write(ERROR_READ);
+        }
+    }
+
+    public boolean canRead() {
+        return nextLine != null && !EMPTY_LINE.equals(nextLine);
     }
 
     @Override
@@ -38,15 +49,4 @@ public class FileReader implements Reader,AutoCloseable,Closeable {
         return temp;
     }
 
-    private void getNextLine() {
-        try {
-            nextLine = bufferedReader.readLine();
-        } catch (IOException e) {
-            consoleWriter.write(ERROR_READ);
-        }
-    }
-
-    public boolean canRead() {
-        return nextLine != null && !EMPTY_LINE.equals(nextLine);
-    }
-}
+   }

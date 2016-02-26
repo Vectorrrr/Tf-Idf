@@ -17,12 +17,10 @@ public class TfIdfFile {
         return this.path;
     }
 
-
     public TfIdfFile(String path) {
         this.path = path;
         words = new ArrayList<>();
     }
-
 
     public boolean containsWord(String word) {
         for (TfIdfWord tfWord : words) {
@@ -58,7 +56,7 @@ public class TfIdfFile {
 
     public TfIdfWord getWord(String word) {
         for (TfIdfWord temp : words) {
-            if (temp.getWord().equals(words)) {
+            if (temp.getWord().equals(word)) {
                 return temp;
             }
         }

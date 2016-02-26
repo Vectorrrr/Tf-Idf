@@ -13,7 +13,6 @@ import view.writer.TfFileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Created by igladush on 25.02.16.
@@ -30,33 +29,27 @@ public class TfCalcer {
     private ConsoleWriter consoleWriter;
     private List<TfIdfFile> tfIdfDirectory;
     private TfFileWriter tfFileWriter;
+    private String path;
+    private String word;
 
     public TfCalcer() {
         consoleWriter = new ConsoleWriter();
-        tfIdfDirectory = new ArrayList<>();
-        tfFileWriter = new TfFileWriter();
-        listOfFiles = new ArrayList<>();
+
     }
 
-    public UserAnswerFormat[] getTfIdf(String s) {
-        String[] splitInput = s.split(" ");
-        if (splitInput.length != 2) {
-            throw new IllegalArgumentException(ERROR_FORMAT_INPUT_DATA);
-        }
-
-        String path = splitInput[0];
-        String word = splitInput[1];
-
-        listOfFiles = new ArrayList<>();
+    public List<UserAnswerFormat> getTfIdf(String s) {
+        createPath(s);
 
         if (!checkPath(path)) {
-            return new UserAnswerFormat[0];
+            return new ArrayList<>();
         }
+
         File workDirectory = new File(path);
+        clearList();
 
         if (!checkMainFile(workDirectory)) {
             createTfIdfForDirectory(workDirectory);
-
+            tfFileWriter.write(tfIdfDirectory, workDirectory + "/" + NAME_TF_IDF_FILE);
         } else {
             try (TfIdfFileReader tfReader = new TfIdfFileReader(workDirectory + "/" + NAME_TF_IDF_FILE)) {
                 tfIdfDirectory = tfReader.read();
@@ -66,30 +59,39 @@ public class TfCalcer {
             }
             if (addNewFile(workDirectory)) {
                 recalcIdf();
+                tfFileWriter.write(tfIdfDirectory, workDirectory + "/" + NAME_TF_IDF_FILE);
             }
 
         }
 
-        tfFileWriter.write(tfIdfDirectory, workDirectory + "/" + NAME_TF_IDF_FILE);
-        ArrayList a = new ArrayList();
 
         List<UserAnswerFormat> answer = new ArrayList<>();
-
         for (TfIdfFile tfFile : tfIdfDirectory) {
             if (tfFile.containsWord(word)) {
                 answer.add(new UserAnswerFormat(tfFile.getPath(), tfFile.getWord(word)));
             }
         }
-        UserAnswerFormat[] ans = answer.toArray(new UserAnswerFormat[answer.size()]);
-        Arrays.sort(ans);
-        return ans;
+        Collections.sort(answer);
+        return answer;
 
+    }
+
+    public void createPath(String s) {
+        String[] splitInput = s.split(" ");
+        if (splitInput.length != 2) {
+            throw new IllegalArgumentException(ERROR_FORMAT_INPUT_DATA);
+        }
+
+        path = splitInput[0];
+        word = splitInput[1];
     }
 
     private boolean addNewFile(File workDirectory) {
         boolean containsNewFile = false;
         for (File f : workDirectory.listFiles()) {
-            if (f.isDirectory()) {
+            if (f.isDirectory()
+                    || f.getAbsolutePath().equals(workDirectory + "/" + NAME_TF_IDF_FILE)
+                    || f.getAbsolutePath().endsWith("~")) {
                 continue;
             }
             boolean contains = false;
@@ -102,7 +104,8 @@ public class TfCalcer {
             if (!contains) {
                 FileInformation temp = createFileInformation(f);
                 TfIdfFile tfFile = new TfIdfFile(temp.getPath());
-                for (int i = 0; i < temp.getCountWords(); ++i) {
+
+                for (int i = 0; i < temp.getDifferentWords(); ++i) {
                     String word = temp.getWord(i);
                     double tf = temp.getTfWord(word);
 
@@ -136,7 +139,7 @@ public class TfCalcer {
 
         for (FileInformation fileInformation : listOfFiles) {
             TfIdfFile temp = new TfIdfFile(fileInformation.getPath());
-            for (int i = 0; i < fileInformation.getCountWords(); ++i) {
+            for (int i = 0; i < fileInformation.getDifferentWords(); ++i) {
                 String word = fileInformation.getWord(i);
                 double tf = fileInformation.getTfWord(word);
                 double idf = getIdfWord(word);
@@ -144,14 +147,14 @@ public class TfCalcer {
             }
             tfIdfDirectory.add(temp);
         }
-        return;
-
     }
 
     private void getFileInformations(File workDirectory) {
         for (File s : workDirectory.listFiles()) {
             //todo use FileFilter
-            if (s.isDirectory() || s.getAbsolutePath().endsWith("~")) {
+            if (s.isDirectory() ||
+                    s.getAbsolutePath().endsWith("~") ||
+                    s.getAbsolutePath().equals(workDirectory.getAbsolutePath() + "/" + NAME_TF_IDF_FILE)) {
                 continue;
             }
             listOfFiles.add(createFileInformation(s));
@@ -179,25 +182,40 @@ public class TfCalcer {
     }
 
     private double getIdfWord(String word) {
-        long count = 0;
+        double count = 0;
         for (FileInformation fileInformation : listOfFiles) {
             if (fileInformation.containWord(word) != 0) {
                 count++;
             }
         }
-        double z=listOfFiles.size() / (count*1.0);
-        return Math.log10(z);
+
+        return listOfFiles.size() / (count);
+    }
+
+    private double getNewIdfWord(String word) {
+        double count = 0;
+        for (TfIdfFile tfIdfFile : tfIdfDirectory) {
+            if (tfIdfFile.containsWord(word)) {
+                count++;
+            }
+        }
+        return tfIdfDirectory.size() / count;
     }
 
     private void recalcIdf() {
 
         for (int i = 0; i < tfIdfDirectory.size(); i++) {
             for (int j = 0; j < tfIdfDirectory.get(i).countOfWord(); ++j) {
-                double newIdf = getIdfWord(tfIdfDirectory.get(i).getWord(j).getWord());
+                double newIdf = getNewIdfWord(tfIdfDirectory.get(i).getWord(j).getWord());
                 tfIdfDirectory.get(i).setWordNewIdf(newIdf, j);
             }
 
         }
     }
 
+    private void clearList() {
+        tfIdfDirectory = new ArrayList<>();
+        tfFileWriter = new TfFileWriter();
+        listOfFiles = new ArrayList<>();
+    }
 }

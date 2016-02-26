@@ -9,16 +9,6 @@ public class TfIdfWord {
     private double tf;
     private double idf;
 
-    public TfIdfWord(String word, double tf, double idf) {
-        this.word = word;
-        this.tf = tf;
-        this.idf = idf;
-    }
-
-    public String getWord() {
-        return word;
-    }
-
     public double getTf() {
         return tf;
     }
@@ -38,8 +28,18 @@ public class TfIdfWord {
         return tf * idf;
     }
 
+    public TfIdfWord(String word, double tf, double idf) {
+        this.word = word;
+        this.tf = tf;
+        this.idf = idf;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
     @Override
-    public String toString(){
-        return word+" "+tf+" "+idf+" ";
+    public String toString() {
+        return word + " " + tf + " " + idf + " ";
     }
 }

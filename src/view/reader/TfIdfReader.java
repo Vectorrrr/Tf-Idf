@@ -1,6 +1,5 @@
 package view.reader;
 
-import model.DataOfWord;
 import model.TfIdfFile;
 
 import java.io.Closeable;

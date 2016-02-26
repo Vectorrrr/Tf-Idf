@@ -1,7 +1,5 @@
 package model;
 
-import java.io.File;
-
 /**
  * Created by igladush on 25.02.16.
  */
@@ -17,16 +15,18 @@ public class DataOfWord {
     public long getCount() {
         return count;
     }
-    public void incCount(){
+
+    public void incCount() {
         this.count++;
     }
+
     //for Serialization in the future
     public DataOfWord() {
     }
 
-    public DataOfWord(String word){
-        this.word=word;
-        this.count=1;
+    public DataOfWord(String word) {
+        this.word = word;
+        this.count = 1;
     }
 
     public DataOfWord(String word, long count) {
@@ -35,8 +35,8 @@ public class DataOfWord {
     }
 
     @Override
-    public String toString(){
-        return word+" "+count+" ";
+    public String toString() {
+        return word + " " + count + " ";
     }
 
 

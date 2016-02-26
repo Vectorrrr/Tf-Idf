@@ -1,7 +1,12 @@
-/home/igladush/IdeaProjects/TF-IDF/testFolder/test.txt 2 
-Vanya 0.5 0.0 
-Ivan 0.5 0.3010299956639812 
-/home/igladush/IdeaProjects/TF-IDF/testFolder/test1.txt 2 
-mama 0.5 0.3010299956639812 
-Vanya 0.5 0.0 
+/home/igladush/IdeaProjects/TF-IDF/testFolder/test2.txt 1 
+Vasya 1.0 1.3333333333333333 
+/home/igladush/IdeaProjects/TF-IDF/testFolder/Petya 2 
+Petya 0.5 2.0 
+Vasya 0.5 1.3333333333333333 
+/home/igladush/IdeaProjects/TF-IDF/testFolder/test1.txt 3 
+Vassss 0.3333333333333333 4.0 
+Petya 0.3333333333333333 2.0 
+Kolya 0.3333333333333333 4.0 
+/home/igladush/IdeaProjects/TF-IDF/testFolder/Vasya.txt 1 
+Vasya 1.0 1.3333333333333333 
 ========

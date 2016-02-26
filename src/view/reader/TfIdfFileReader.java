@@ -1,6 +1,5 @@
 package view.reader;
 
-import model.DataOfWord;
 import model.TfIdfFile;
 import model.TfIdfWord;
 import view.writer.ConsoleWriter;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class TfIdfFileReader implements TfIdfReader {
     private final String EMPTY_STRING = "";
-    private final String ERROR_READ = "";
+    private final String ERROR_READ = "I can't read";
 
     private ConsoleWriter consoleWriter;
     private BufferedReader bufferedReader;
@@ -41,7 +40,7 @@ public class TfIdfFileReader implements TfIdfReader {
         while (canRead()) {
             String[] input = nextLine.split(" ");
             if (input.length == 2) {
-                temp = new TfIdfFile(input[1]);
+                temp = new TfIdfFile(input[0]);
                 answer.add(temp);
             } else {
                 String word = input[0];

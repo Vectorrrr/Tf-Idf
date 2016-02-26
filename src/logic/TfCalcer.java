@@ -102,7 +102,7 @@ public class TfCalcer {
                 }
             }
             if (!contains) {
-                FileInformation temp = createFileInformation(f);
+                FileInformation temp =  new FileGetter(f).createFileInformation();
                 TfIdfFile tfFile = new TfIdfFile(temp.getPath());
 
                 for (int i = 0; i < temp.getDifferentWords(); ++i) {
@@ -157,29 +157,11 @@ public class TfCalcer {
                     s.getAbsolutePath().equals(workDirectory.getAbsolutePath() + "/" + NAME_TF_IDF_FILE)) {
                 continue;
             }
-            listOfFiles.add(createFileInformation(s));
+            new Thread(new FileGetter(s)).start();
         }
     }
 
-    private FileInformation createFileInformation(File file) {
-        FileInformation fileInformation = new FileInformation(file);
 
-        try (FileReader fileReader = new FileReader(file)) {
-            while (fileReader.canRead()) {
-
-                String[] temp = fileReader.read().split("[,. /]");
-                for (String s : temp) {
-                    if (s.length() > 0) {
-                        System.out.println("Add word " + s);
-                        fileInformation.addWord(s);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            consoleWriter.write(ERROR_CREATE);
-        }
-        return fileInformation;
-    }
 
     private double getIdfWord(String word) {
         double count = 0;
@@ -218,4 +200,42 @@ public class TfCalcer {
         tfFileWriter = new TfFileWriter();
         listOfFiles = new ArrayList<>();
     }
+
+    private class FileGetter implements Runnable {
+        private File file;
+
+        public FileGetter(String path) {
+            this.file = new File(path);
+        }
+        public FileGetter(File file){
+            this.file=file;
+        }
+
+        @Override
+        public void run() {
+            listOfFiles.add(createFileInformation());
+        }
+        private FileInformation createFileInformation() {
+            System.out.println("Read file....."+file.getAbsolutePath());
+
+            FileInformation fileInformation = new FileInformation(file);
+
+            try (FileReader fileReader = new FileReader(file)) {
+                while (fileReader.canRead()) {
+
+                    String[] temp = fileReader.read().split("[,. /]");
+                    for (String s : temp) {
+                        if (s.length() > 0) {
+                            System.out.println("Add word " + s);
+                            fileInformation.addWord(s);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                consoleWriter.write(ERROR_CREATE);
+            }
+            return fileInformation;
+        }
+    }
+
 }

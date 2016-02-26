@@ -13,11 +13,11 @@ import java.util.List;
  * Created by igladush on 25.02.16.
  */
 
-public class TfIdfFileReader implements TfIdfReader {
+public  class  TfIdfFileReader implements TfIdfReader {
     private final String EMPTY_STRING = "";
     private final String ERROR_READ = "I can't read";
 
-    private ConsoleWriter consoleWriter;
+    private  ConsoleWriter consoleWriter;
     private BufferedReader bufferedReader;
     private String nextLine;
 
@@ -34,7 +34,7 @@ public class TfIdfFileReader implements TfIdfReader {
     }
 
     @Override
-    public List<TfIdfFile> read() {
+    public  List<TfIdfFile> read() {
         List<TfIdfFile> answer = new ArrayList<>();
         TfIdfFile temp = null;
         while (canRead()) {

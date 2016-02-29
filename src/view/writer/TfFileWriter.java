@@ -2,15 +2,18 @@ package view.writer;
 
 import model.TfIdfFile;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by igladush on 25.02.16.
  */
 public class TfFileWriter {
     private final String ERROR_WRITER = "I have exception when i write in your file";
+    private final String ERROR_READ_PROPERTY="I can't read property";
     public final static String SEPARATOR = "========";
 
     private ConsoleWriter consoleWriter;

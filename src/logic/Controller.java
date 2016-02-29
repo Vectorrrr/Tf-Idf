@@ -30,11 +30,14 @@ public class Controller {
 
             switch (userAns) {
                 case ("1"):
-                    consoleWriter.write("Input you word in format Path  Word");
+                    consoleWriter.write("Input path to directory");
                     String inputString = consoleReader.read();
-                    for (UserAnswerFormat usAns : tfCalcer.getTfIdf(inputString)) {
-                        consoleWriter.write(usAns.toString());
-                    }
+                    index.indexedDirectory(inputString);
+                    break;
+                case ("2"):
+                    consoleWriter.write("Input path to directory that you want recalc");
+                    inputString = consoleReader.read();
+                    index.indexedDirectory(inputString);
                     break;
                 case ("0"):
                     view.buy();

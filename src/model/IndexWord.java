@@ -1,5 +1,7 @@
 package model;
 
+import logic.Index;
+
 /**
  * Created by igladush on 25.02.16.
  */
@@ -53,10 +55,10 @@ public class IndexWord {
     public boolean equals(Object o){
         if(o==null)
             return false;
-        if(!(o instanceof String)){
+        if(!(o instanceof IndexWord)){
             return false;
         }
-        String s=(String)o;
-        return s.equals(word);
+        IndexWord s=(IndexWord) o;
+        return s.getWord().equals(word);
     }
 }

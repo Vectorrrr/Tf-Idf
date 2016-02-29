@@ -25,7 +25,8 @@ public class IndexFile {
     }
 
     public boolean containsWord(String word) {
-        return words.contains(word);
+
+        return words.contains(new IndexWord(word,1.0));
     }
 
     public Collection<IndexWord> getWords(){

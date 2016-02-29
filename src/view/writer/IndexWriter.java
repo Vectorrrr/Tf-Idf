@@ -3,10 +3,12 @@ package view.writer;
 import model.IndexFile;
 
 import java.io.Closeable;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by igladush on 25.02.16.
@@ -24,6 +26,14 @@ public class IndexWriter implements AutoCloseable,Closeable{
     }
 
     public void write(Collection<IndexFile> tfIdfFileList, String path) {
+
+        Properties p=new Properties();
+        try {
+            p.load(new FileInputStream("property.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        path=path+"/"+p.get("FileAnswerName").toString();
         try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
             for (IndexFile temp : tfIdfFileList) {
                 fileOutputStream.write(temp.toString().getBytes());

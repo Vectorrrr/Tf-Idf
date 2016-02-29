@@ -2,13 +2,13 @@ package logic;
 
 
 import model.FileInformation;
-import model.TfIdfFile;
-import model.TfIdfWord;
+import model.IndexFile;
+import model.IndexWord;
 import model.UserAnswerFormat;
 import view.reader.FileReader;
 import view.reader.TfIdfFileReader;
 import view.writer.ConsoleWriter;
-import view.writer.TfFileWriter;
+import view.writer.IndexWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,16 +19,17 @@ import java.util.*;
  */
 
 public class TfCalcer {
+    public  final String NAME_TF_IDF_FILE = "tf-idf.file";
     private final String ERROR_CREATE = "I can't create file information";
     private final String ERROR_READ = "I can't read file";
     private final String ERROR_FORMAT_INPUT_DATA = "You input incorrect string";
     private final String EMPTY_STRING = "";
-    private final String NAME_TF_IDF_FILE = "tf-idf.file";
+
 
     private List<FileInformation> listOfFiles;
     private ConsoleWriter consoleWriter;
-    private List<TfIdfFile> tfIdfDirectory;
-    private TfFileWriter tfFileWriter;
+    private List<IndexFile> tfIdfDirectory;
+    private IndexWriter tfFileWriter;
     private String path;
     private String word;
 
@@ -66,7 +67,7 @@ public class TfCalcer {
 
 
         List<UserAnswerFormat> answer = new ArrayList<>();
-        for (TfIdfFile tfFile : tfIdfDirectory) {
+        for (IndexFile tfFile : tfIdfDirectory) {
             if (tfFile.containsWord(word)) {
                 answer.add(new UserAnswerFormat(tfFile.getPath(), tfFile.getWord(word)));
             }
@@ -95,7 +96,7 @@ public class TfCalcer {
                 continue;
             }
             boolean contains = false;
-            for (TfIdfFile tf : tfIdfDirectory) {
+            for (IndexFile tf : tfIdfDirectory) {
                 if (tf.getPath().equals(f.getAbsolutePath())) {
                     contains = true;
                     break;
@@ -103,14 +104,14 @@ public class TfCalcer {
             }
             if (!contains) {
                 FileInformation temp =  new FileGetter(f).createFileInformation();
-                TfIdfFile tfFile = new TfIdfFile(temp.getPath());
+                IndexFile tfFile = new IndexFile(temp.getPath());
 
                 for (int i = 0; i < temp.getDifferentWords(); ++i) {
                     String word = temp.getWord(i);
                     double tf = temp.getTfWord(word);
 
                     //we don't calc idf because we'll do recalc
-                    tfFile.addWord(new TfIdfWord(word, tf, 0));
+                    tfFile.addWord(new IndexWord(word, tf, 0));
                 }
                 tfIdfDirectory.add(tfFile);
                 containsNewFile = true;
@@ -138,12 +139,12 @@ public class TfCalcer {
         getFileInformations(workDirectory);
 
         for (FileInformation fileInformation : listOfFiles) {
-            TfIdfFile temp = new TfIdfFile(fileInformation.getPath());
+            IndexFile temp = new IndexFile(fileInformation.getPath());
             for (int i = 0; i < fileInformation.getDifferentWords(); ++i) {
                 String word = fileInformation.getWord(i);
                 double tf = fileInformation.getTfWord(word);
                 double idf = getIdfWord(word);
-                temp.addWord(new TfIdfWord(word, tf, idf));
+                temp.addWord(new IndexWord(word, tf, idf));
             }
             tfIdfDirectory.add(temp);
         }
@@ -176,7 +177,7 @@ public class TfCalcer {
 
     private double getNewIdfWord(String word) {
         double count = 0;
-        for (TfIdfFile tfIdfFile : tfIdfDirectory) {
+        for (IndexFile tfIdfFile : tfIdfDirectory) {
             if (tfIdfFile.containsWord(word)) {
                 count++;
             }
@@ -197,7 +198,7 @@ public class TfCalcer {
 
     private void clearList() {
         tfIdfDirectory = new ArrayList<>();
-        tfFileWriter = new TfFileWriter();
+        tfFileWriter = new IndexWriter();
         listOfFiles = new ArrayList<>();
     }
 

@@ -1,9 +1,9 @@
 package view.reader;
 
-import model.TfIdfFile;
-import model.TfIdfWord;
+import model.IndexFile;
+import model.IndexWord;
 import view.writer.ConsoleWriter;
-import view.writer.TfFileWriter;
+import view.writer.IndexWriter;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by igladush on 25.02.16.
  */
 
-public  class  TfIdfFileReader implements TfIdfReader {
+public  class  TfIdfFileReader implements Reader<List<IndexFile>> {
     private final String EMPTY_STRING = "";
     private final String ERROR_READ = "I can't read";
 
@@ -34,19 +34,19 @@ public  class  TfIdfFileReader implements TfIdfReader {
     }
 
     @Override
-    public  List<TfIdfFile> read() {
-        List<TfIdfFile> answer = new ArrayList<>();
-        TfIdfFile temp = null;
+    public  List<IndexFile> read() {
+        List<IndexFile> answer = new ArrayList<>();
+        IndexFile temp = null;
         while (canRead()) {
             String[] input = nextLine.split(" ");
             if (input.length == 2) {
-                temp = new TfIdfFile(input[0]);
+                temp = new IndexFile(input[0]);
                 answer.add(temp);
             } else {
                 String word = input[0];
                 double tf = Double.parseDouble(input[1]);
                 double idf = Double.parseDouble(input[2]);
-                temp.addWord(new TfIdfWord(word, tf, idf));
+                temp.addWord(new IndexWord(word, tf, idf));
             }
             getNextLine();
         }
@@ -54,7 +54,7 @@ public  class  TfIdfFileReader implements TfIdfReader {
     }
 
     public boolean canRead() {
-        return !TfFileWriter.SEPARATOR.equals(nextLine);
+        return !IndexWriter.SEPARATOR.equals(nextLine);
     }
 
     private void getNextLine() {

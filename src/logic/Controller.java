@@ -12,7 +12,7 @@ public class Controller {
     private View view;
     private ConsoleReader consoleReader;
     private ConsoleWriter consoleWriter;
-
+    private Index index;
     private TfCalcer tfCalcer;
 
     public Controller() {
@@ -20,6 +20,7 @@ public class Controller {
         consoleReader = new ConsoleReader();
         consoleWriter = new ConsoleWriter();
         tfCalcer = new TfCalcer();
+        index=new Index();
     }
 
     public void run() {

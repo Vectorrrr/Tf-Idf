@@ -5,17 +5,17 @@ package model;
  */
 public class UserAnswerFormat implements Comparable<UserAnswerFormat> {
     private String path;
-    private TfIdfWord word;
+    private IndexWord word;
 
     public String getPath() {
         return path;
     }
 
-    public TfIdfWord getWord() {
+    public IndexWord getWord() {
         return this.word;
     }
 
-    public UserAnswerFormat(String path, TfIdfWord word) {
+    public UserAnswerFormat(String path, IndexWord word) {
         this.path = path;
         this.word = word;
     }

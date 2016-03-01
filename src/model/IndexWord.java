@@ -1,21 +1,16 @@
 package model;
 
+import logic.Index;
+
 /**
  * Created by igladush on 25.02.16.
  */
-public class TfIdfWord {
+public class IndexWord {
+
 
     private String word;
     private double tf;
     private double idf;
-
-    public double getTf() {
-        return tf;
-    }
-
-    public double getIdf() {
-        return idf;
-    }
 
     public void setIdf(double idf) {
         if (idf < 0) {
@@ -28,9 +23,13 @@ public class TfIdfWord {
         return tf * idf;
     }
 
-    public TfIdfWord(String word, double tf, double idf) {
+
+    public IndexWord(String word, double tf) {
         this.word = word;
         this.tf = tf;
+    }
+    public IndexWord(String word, double tf, double idf) {
+        this(word,tf);
         this.idf = idf;
     }
 
@@ -41,5 +40,16 @@ public class TfIdfWord {
     @Override
     public String toString() {
         return word + " " + tf + " " + idf + " ";
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o==null)
+            return false;
+        if(!(o instanceof IndexWord)){
+            return false;
+        }
+        IndexWord s=(IndexWord) o;
+        return s.getWord().equals(word);
     }
 }

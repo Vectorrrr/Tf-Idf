@@ -1,30 +1,41 @@
 package view.writer;
 
-import model.TfIdfFile;
+import model.IndexFile;
 
+import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
 /**
  * Created by igladush on 25.02.16.
  */
-public class TfFileWriter {
+//todo rewrite implements writer
+public class IndexWriter implements AutoCloseable,Closeable{
     private final String ERROR_WRITER = "I have exception when i write in your file";
     private final String ERROR_READ_PROPERTY="I can't read property";
     public final static String SEPARATOR = "========";
 
     private ConsoleWriter consoleWriter;
 
-    public TfFileWriter() {
+    public IndexWriter() {
         consoleWriter = new ConsoleWriter();
     }
 
-    public void write(List<TfIdfFile> tfIdfFileList, String path) {
+    public void write(Collection<IndexFile> tfIdfFileList, String path) {
+
+        Properties p=new Properties();
+        try {
+            p.load(new FileInputStream("property.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        path=path+"/"+p.get("FileAnswerName").toString();
         try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
-            for (TfIdfFile temp : tfIdfFileList) {
+            for (IndexFile temp : tfIdfFileList) {
                 fileOutputStream.write(temp.toString().getBytes());
                 fileOutputStream.write(System.getProperty("line.separator").getBytes());
                 for (int i = 0; i < temp.countOfWord(); i++) {
@@ -36,5 +47,11 @@ public class TfFileWriter {
         } catch (IOException e) {
             consoleWriter.write(ERROR_WRITER);
         }
+    }
+
+
+    @Override
+    public void close() throws IOException {
+
     }
 }

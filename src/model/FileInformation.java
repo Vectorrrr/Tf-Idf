@@ -4,6 +4,8 @@ package model;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,11 +14,8 @@ import java.util.List;
 public class FileInformation {
     private final String ERROR_INDEX = "You indicated wrong index";
     private String path;
-    private List<DataOfWord> dataOfWords;
+    private List<WordCount> wordsCount = new ArrayList<>();
 
-    {
-        dataOfWords = new ArrayList<>();
-    }
 
     public String getPath() {
         return this.path;
@@ -26,51 +25,25 @@ public class FileInformation {
         this.path = path;
     }
 
-    public FileInformation(File file) {
-        this.path = file.getAbsolutePath();
-    }
 
-    //return 0 if word exist else return count of word
-
-    public int getCountWords() {
+    public int totalCount() {
         int answer = 0;
-        for (DataOfWord dataOfWord : dataOfWords) {
-            answer += dataOfWord.getCount();
+        for (WordCount wordCount : wordsCount) {
+            answer += wordCount.getCount();
         }
         return answer;
     }
-
-    public int getDifferentWords() {
-        return dataOfWords.size();
-    }
-
-    public String getWord(int index) {
-        if (index > dataOfWords.size() || 0 > index) {
-            throw new IllegalStateException(ERROR_INDEX);
-        }
-        return dataOfWords.get(index).getWord();
-    }
-
-    public long containWord(String word) {
-        for (DataOfWord dataOfWord : dataOfWords) {
-            if (dataOfWord.getWord().equals(word)) {
-                return dataOfWord.getCount();
-            }
-        }
-        return 0;
+    public Collection<WordCount> getWords(){
+        return Collections.unmodifiableCollection(wordsCount);
     }
 
     public void addWord(String word) {
-        for (int i = 0; i < dataOfWords.size(); ++i) {
-            if (dataOfWords.get(i).getWord().equals(word)) {
-                dataOfWords.get(i).incCount();
+        for (int i = 0; i < wordsCount.size(); ++i) {
+            if (wordsCount.get(i).getWord().equals(word)) {
+                wordsCount.get(i).incCount();
                 return;
             }
         }
-        dataOfWords.add(new DataOfWord(word));
-    }
-
-    public double getTfWord(String word) {
-        return containWord(word) / (getCountWords() * 1.0);
+        wordsCount.add(new WordCount(word));
     }
 }

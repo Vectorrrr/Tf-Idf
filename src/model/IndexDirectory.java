@@ -14,16 +14,18 @@ public class IndexDirectory {
     private Collection<IndexFile> indexFiles = new ArrayList<>();
     private String path;
 
-    public IndexDirectory(String path){
-        this.path=path;
+    public IndexDirectory(String path) {
+        this.path = path;
     }
 
-    public File getFile(){
+    public File getFile() {
         return new File(path);
     }
-    public int getCountFiles(){
+
+    public int getCountFiles() {
         return indexFiles.size();
     }
+
     public synchronized Collection<IndexFile> getFiles() {
         return Collections.unmodifiableCollection(indexFiles);
     }

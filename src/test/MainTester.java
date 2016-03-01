@@ -72,13 +72,13 @@ public class MainTester {
 
   @org.junit.Test
   public void existWordTest() {
-    List<UserAnswerFormat> ans = calcer.getTfIdf(path + " VVVV");
+    List<UserAnswerFormat> ans = calcer.searchWord(path + " VVVV");
     assertEquals(0, ans.size());
   }
 
   @Test
   public void oneAnswerWordTest() {
-    List<UserAnswerFormat> usFormat = calcer.getTfIdf(path + " Sveta");
+    List<UserAnswerFormat> usFormat = calcer.searchWord(path + " Sveta");
     assertEquals(1, usFormat.size());
     assertTrue((path + thirdFile).equals(usFormat.get(0).getPath()));
     assertEquals(1.5, usFormat.get(0).getTfIdf(), ACCURACY);
@@ -86,7 +86,7 @@ public class MainTester {
 
   @Test
   public void twoAnswerWordTest() {
-    List<UserAnswerFormat> usFormat = calcer.getTfIdf(path + " Vanya");
+    List<UserAnswerFormat> usFormat = calcer.searchWord(path + " Vanya");
     assertEquals(2, usFormat.size());
     assertTrue((path + secondFile).equals(usFormat.get(0).getPath()));
     assertEquals(0.75, usFormat.get(0).getTfIdf(), ACCURACY);
@@ -97,7 +97,7 @@ public class MainTester {
 
   @Test
   public void threeAnswerWordTest() {
-    List<UserAnswerFormat> usFormat = calcer.getTfIdf(path + " Petya");
+    List<UserAnswerFormat> usFormat = calcer.searchWord(path + " Petya");
     assertEquals(3, usFormat.size());
     assertTrue((path + thirdFile).equals(usFormat.get(0).getPath()));
     assertEquals(0.5, usFormat.get(0).getTfIdf(), ACCURACY);

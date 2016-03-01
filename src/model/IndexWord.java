@@ -12,15 +12,6 @@ public class IndexWord {
     private double tf;
     private double idf;
 
-
-    public double getTf() {
-        return tf;
-    }
-
-    public double getIdf() {
-        return idf;
-    }
-
     public void setIdf(double idf) {
         if (idf < 0) {
             return;

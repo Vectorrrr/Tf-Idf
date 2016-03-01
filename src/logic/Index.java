@@ -5,15 +5,13 @@ import view.reader.FileReader;
 import view.writer.ConsoleWriter;
 import view.writer.IndexWriter;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import static java.lang.Thread.sleep;
-import static java.util.Collections.synchronizedCollection;
 
 /**
  * Created by igladush on 29.02.16.
@@ -26,9 +24,8 @@ import static java.util.Collections.synchronizedCollection;
 * */
 public class Index {
     private final String ERROR_CREATE = "I can't create file information";
-    private final String ERROR_NOTDIRECTORY = "You want index file, not directory";
-    private final String ERROR_EXIST = "The directory dosen't exist";
-
+    private final String ERROR_READ_PROPERTY = "I can't read property";
+    private final String ERROR_EXIST = "The directory doesn't exist";
 
     private ConsoleWriter consoleWriter;
 
@@ -36,12 +33,15 @@ public class Index {
         consoleWriter = new ConsoleWriter();
     }
 
-    //todo it's good practise create space line with logic group in method
+    //todo Is it good practise create space line with logic group in method?
     public void indexedDirectory(String path) {
         File directory = new File(path);
-        checkCorrectFile(directory);
 
-        IndexDirectory indexDirectory=new IndexDirectory(path);
+        if (!isCorrectDiretory(directory)) {
+            throw new IllegalArgumentException(ERROR_EXIST);
+        }
+
+        IndexDirectory indexDirectory = new IndexDirectory(path);
 
         createPreindex(indexDirectory);
 
@@ -51,7 +51,8 @@ public class Index {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-       calcIdf(indexDirectory);
+
+        calcIdf(indexDirectory);
         saveIndex(indexDirectory.getFiles(), directory.getAbsolutePath());
     }
 
@@ -59,18 +60,19 @@ public class Index {
     private void createPreindex(IndexDirectory indexDirectory) {
         for (File file : getFiles(indexDirectory.getFile())) {
             if (file.canRead()) {
-                new Thread(new FileGetter(file,indexDirectory)).start();
+                new Thread(new FileGetter(file, indexDirectory)).start();
             }
         }
     }
 
-    private void checkCorrectFile(File file) {
+    private boolean isCorrectDiretory(File file) {
         if (!file.exists()) {
-            throw new IllegalArgumentException(ERROR_EXIST);
+            return false;
         }
         if (file.isFile()) {
-            throw new IllegalArgumentException(ERROR_NOTDIRECTORY);
+            return false;
         }
+        return true;
     }
 
     private List<File> getFiles(File f) {
@@ -91,11 +93,36 @@ public class Index {
         return answer;
     }
 
+    public boolean isIndexed(String path) {
+        File directory = new File(path);
+        if (!isCorrectDiretory(directory) || !containsIndexFile(directory)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean containsIndexFile(File directory) {
+        Properties p = new Properties();
+        try {
+            p.load(new FileInputStream("property.txt"));
+        } catch (IOException e) {
+            System.err.print(ERROR_READ_PROPERTY);
+        }
+        String indexFileName = p.get("FileAnswerName").toString();
+        for (File f : directory.listFiles()) {
+            if (f.isFile() && indexFileName.equals(f.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void calcIdf(IndexDirectory directory) {
         int countFiles = directory.getCountFiles();
-        Collection<IndexFile> dir=directory.getFiles();
+        Collection<IndexFile> dir = directory.getFiles();
 
-        for (IndexFile file :dir) {
+        for (IndexFile file : dir) {
             for (IndexWord word : file.getWords()) {
                 double count = 0;
                 for (IndexFile temp : dir) {
@@ -125,7 +152,7 @@ public class Index {
 
         public FileGetter(File file, IndexDirectory indexDirectory) {
             this.file = file;
-            this.indexDirectory=indexDirectory;
+            this.indexDirectory = indexDirectory;
         }
 
         //add a prepack TfIdfFile, this file doesn't contains Idf

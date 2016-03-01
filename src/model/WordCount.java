@@ -20,18 +20,9 @@ public class WordCount {
         this.count++;
     }
 
-    //for Serialization in the future
-    public WordCount() {
-    }
-
     public WordCount(String word) {
         this.word = word;
         this.count = 1;
-    }
-
-    public WordCount(String word, long count) {
-        this.word = word;
-        this.count = count;
     }
 
     @Override

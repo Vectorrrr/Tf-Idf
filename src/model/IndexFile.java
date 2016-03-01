@@ -26,13 +26,14 @@ public class IndexFile {
 
     public boolean containsWord(String word) {
 
-        return words.contains(new IndexWord(word,1.0));
+        return words.contains(new IndexWord(word, 1.0));
     }
 
-    public Collection<IndexWord> getWords(){
+    public Collection<IndexWord> getWords() {
         return Collections.unmodifiableCollection(words);
 
     }
+
     public int countOfWord() {
         return words.size();
     }
@@ -41,9 +42,9 @@ public class IndexFile {
         if (word == null) {
             return;
         }
-       if(words.contains(word)){
-           return;
-       }
+        if (words.contains(word)) {
+            return;
+        }
         words.add(word);
     }
 
@@ -63,12 +64,6 @@ public class IndexFile {
         throw new IllegalStateException(ERROR_GET_WORD);
     }
 
-    public void setWordNewIdf(double idf, int index) {
-        if (index > words.size() || index < 0) {
-            throw new IllegalStateException(ERROR_INDEX);
-        }
-        words.get(index).setIdf(idf);
-    }
 
     public String toString() {
         return path + " " + words.size() + " ";
